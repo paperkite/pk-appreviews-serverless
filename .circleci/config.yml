@@ -24,7 +24,7 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install -g serverless
+      - run: sudo npm install -g serverless
 
       - save_cache:
           paths:
