@@ -29,7 +29,7 @@ If you are a PK person, you'll need to have the `pk-internal` AWS profile config
 Then it should be as simple as:
 
 ```bash
-AWS_PROFILE=pk-internal serverless invoke local --function app-reviews`
+AWS_PROFILE=pk-internal serverless invoke local --function app-reviews
 ```
 
 ## Using this yourself

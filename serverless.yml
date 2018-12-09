@@ -17,7 +17,6 @@ provider:
   name: aws
   stage: production
   runtime: nodejs8.10
-  profile: pk-internal
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
   iamRoleStatements:
