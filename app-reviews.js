@@ -52,17 +52,20 @@ async function fetchFromGooglePlay(app) {
   return results;
 }
 
-async function handleReviews(reviews, app) {
-  if(reviews.length <= 0) {
-    console.log('no reviews found for ', app.cacheKey);
-    return [];
-  }
-  
+async function handleReviews(reviews, app) {  
   var appData = await fetchAppData(app.cacheKey);
 
+  // We skip if we don't have a lastSeenReviewId otherwise we'll flood the 
+  // channel with historic reviews when a new app is added
   if(!appData.lastSeenReviewId) {
-    console.log('no lastSeenReviewId, skipping slack post assuming this app is new');
+    console.log('no lastSeenReviewId, notifying slack of new watcher');
     await updateLastReviewSeen(app.cacheKey, reviews[0]);
+    await postWatchingMessage(app);
+    return [];
+  }
+
+  if(reviews.length <= 0) {
+    console.log('no reviews found for ', app.cacheKey);
     return [];
   }
 
@@ -109,14 +112,15 @@ async function fetchAppData(cacheKey) {
 
 
 async function updateLastReviewSeen(cacheKey, review) {
-  console.log('setting last review id for ' + cacheKey + ' to ' + review.id);
+  var id = review ? review.id : 'undefined';
+  console.log('setting last review id for ' + cacheKey + ' to ' + id);
   console.log(process.env.DYNAMODB_TABLE);
   try {
     var response = await DynamoDb.put({
       TableName: process.env.DYNAMODB_TABLE,
       Item: { 
         id: cacheKey,
-        lastSeenReviewId: review.id
+        lastSeenReviewId: id
       },
     }).promise();  
   }
@@ -178,6 +182,14 @@ function formatSlackMessage(review, app) {
   }
 
   return message;
+}
+
+async function postWatchingMessage(app) {
+  var message = {
+    'text': 'Now watching for reviews of ' + app.appName + ' on the ' + FRIENDLY_STORE_NAMES[app.store] + ' (`' + app.appId + '`)'
+  }
+
+  return await postToSlack(message);
 }
 
 async function postToSlack(message) {
