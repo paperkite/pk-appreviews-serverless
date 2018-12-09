@@ -38,8 +38,6 @@ workflows:
   pipeline:
     jobs:
       - deploy:
-          requires:
-            - build
           filters:
             branches:
               only:
