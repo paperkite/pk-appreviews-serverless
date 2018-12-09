@@ -16,6 +16,8 @@ technically anyone could use that to funnel messages into the slack org.
 Add a new stanza to the `apps-google-play.json` or `apps-app-store.json` files depending on which 
 store you want to look in. 
 
+For PK people just commit that change to master and it will be automatically updated by CircleCi.
+
 ## Running locally
 
 You'll need to install the `serverless` module from npm, which you can do with a

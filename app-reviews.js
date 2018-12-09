@@ -13,18 +13,12 @@ const Request = require('request-promise-native')
 const DynamoDb = new AWS.DynamoDB.DocumentClient();
 
 async function start() {
-  // for(var app, i = 0; app = APP_STORE_APPS[i]; i++) {
-  //   await fetchFromAppStore(app);
-  // }
-
-  // for(var app, i = 0; app = PLAY_STORE_APPS[i]; i++) {
-  //   await fetchFromGooglePlay(app);
-  // }
   var appStore = APP_STORE_APPS.map(fetchFromAppStore);
   var playStore = PLAY_STORE_APPS.map(fetchFromGooglePlay);
 
-  return Promise.all([].concat(playStore, appStore)).then(() => {
-    console.log('done it all!');
+  return Promise.all([].concat(playStore, appStore)).then((result) => {
+    console.log('Finished checking for new reviews');
+    return [].concat.apply([], result);
   });
 }
 
@@ -65,7 +59,7 @@ async function handleReviews(reviews, app) {
   }
 
   if(reviews.length <= 0) {
-    console.log('no reviews found for ', app.cacheKey);
+    console.log('no reviews found for', app.cacheKey);
     return [];
   }
 
@@ -90,7 +84,6 @@ async function handleReviews(reviews, app) {
 
 async function fetchAppData(cacheKey) {
   // fetch todo from the database
-  console.log(process.env.DYNAMODB_TABLE);
   var app = {};
   try {
     var response = await DynamoDb.get({
@@ -114,7 +107,6 @@ async function fetchAppData(cacheKey) {
 async function updateLastReviewSeen(cacheKey, review) {
   var id = review ? review.id : 'undefined';
   console.log('setting last review id for ' + cacheKey + ' to ' + id);
-  console.log(process.env.DYNAMODB_TABLE);
   try {
     var response = await DynamoDb.put({
       TableName: process.env.DYNAMODB_TABLE,
