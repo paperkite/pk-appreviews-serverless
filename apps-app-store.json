@@ -1,0 +1,80 @@
+[
+    {
+        "appId": "1116524739",
+        "appName": "BPMe NZ",
+        "countries": [
+            "nz"
+        ]
+    },
+    {
+        "appId": "1132394222",
+        "appName": "BPMe AU",
+        "countries": [
+            "au"
+        ]
+    },
+    {
+        "appId": "1351104504",
+        "appName": "Clubs NZ",
+        "countries": [
+            "nz"
+        ]
+    },
+    {
+        "appId": "1231326408",
+        "appName": "My Asthma",
+        "countries": [
+            "nz"
+        ]
+    },
+    {
+        "appId": "785021889",
+        "appName": "Randstad Timesheets",
+        "countries": [
+            "au",
+            "nz"
+        ]
+    },
+    {
+        "appId": "932094923",
+        "appName": "NZPA",
+        "countries": [
+            "nz"
+        ]
+    },
+    {
+        "appId": "1265690792",
+        "appName": "Beervana",
+        "countries": [
+            "nz"
+        ]
+    },
+    {
+        "appId": "460256659",
+        "appName": "Hell",
+        "countries": [
+            "nz"
+        ]
+    },
+    {
+        "appId": "1119044123",
+        "appName": "Rydges",
+        "countries": [
+            "nz"
+        ]
+    },
+    {
+        "appId": "700586133",
+        "appName": "UN Handbook",
+        "countries": [
+            "nz"
+        ]
+    },
+    {
+        "appId": "1278164689",
+        "appName": "Countdown Pick up",
+        "countries": [
+            "nz"
+        ]
+    }
+]

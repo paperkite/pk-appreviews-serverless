@@ -1,0 +1,27 @@
+{
+  "name": "pk-app-reviews",
+  "version": "0.0.1",
+  "description": "A barebones Node.js app for posting play store reviews to slack",
+  "engines": {
+    "node": "6.10.2"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "app-store-scraper": "^0.15.2",
+    "aws-sdk": "^2.373.0",
+    "google-play-scraper": "^6.2.2",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paperkite/pk-appreviews-serverless"
+  },
+  "keywords": [
+    "node"
+  ],
+  "license": "MIT"
+}

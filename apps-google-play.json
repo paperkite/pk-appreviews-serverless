@@ -1,0 +1,79 @@
+[
+    {
+        "appId": "com.bp.bpmenz",
+        "appName": "BPMe NZ",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "com.bp.bpmeau",
+        "appName": "BPMe AU",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "com.clubsnz.clublocator2",
+        "appName": "Clubs NZ",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "nz.org.asthmafoundation.asthma",
+        "appName": "My Asthma",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "com.randstad.timesheets",
+        "appName": "Randstad Timesheets",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "nz.org.policeassn.nzpa",
+        "appName": "NZPA",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "nz.co.paperkite.beervana",
+        "appName": "Beervana",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "nz.co.hellpizza.order",
+        "appName": "Hell",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "com.posbosshq.regular",
+        "appName": "Regulr",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "govt.nz.mfat.UNHandbook",
+        "appName": "UN Handbook",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "appId": "nz.co.countdown.android.pickup",
+        "appName": "Countdown Pick up",
+        "languages": [
+            "en"
+        ]
+    }
+]
