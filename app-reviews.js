@@ -47,15 +47,12 @@ async function fetchFromGooglePlay(app) {
 }
 
 async function handleReviews(reviews, app) {  
-  var appData = await fetchAppData(app.cacheKey);
-
+  var appIsNew = await storeAppIfUnseen(app);
   // We skip if we don't have a lastSeenReviewId otherwise we'll flood the 
   // channel with historic reviews when a new app is added
-  if(!appData.lastSeenReviewId) {
-    console.log('no lastSeenReviewId, notifying slack of new watcher');
-    await updateLastReviewSeen(app.cacheKey, reviews[0]);
+  if(appIsNew) {
+    console.log(`${app.cacheKey} is new, notifying slack of new watcher`);
     await postWatchingMessage(app);
-    return [];
   }
 
   if(reviews.length <= 0) {
@@ -63,72 +60,82 @@ async function handleReviews(reviews, app) {
     return [];
   }
 
-  var newReviews = [];
+  var cachedReviews = [];
   for(var review, i = 0; review = reviews[i]; i++) {
-    if(review.id == appData.lastSeenReviewId) { break }
-    newReviews.push(review);
+    cachedReviews.push(storeReviewIfUnseen(app.cacheKey, review));
   }
 
-  if(newReviews.length > 0) {
-    console.log('got new reviews for', app.cacheKey, newReviews);
-    await updateLastReviewSeen(app.cacheKey, newReviews[0]);
-    await postReviewsToSlack(newReviews, app);
+  return Promise.all(cachedReviews).then((stored) => {
+    var newReviews = stored.filter(item => item !== false);
 
-    return newReviews;
-  }
-  else {
-    console.log('no new reviews for ' + app.cacheKey);
-    return [];
-  }
-}
-
-async function fetchAppData(cacheKey) {
-  // fetch todo from the database
-  var app = {};
-  try {
-    var response = await DynamoDb.get({
-      TableName: process.env.DYNAMODB_TABLE,
-      Key: { id: cacheKey },
-    }).promise();
-
-    app = response.Item || {};
-  }
-  catch(e) {
-    console.log(e);
-    if(e.name !== 'ResourceNotFoundException') {
-      throw e;
+    if(!appIsNew && newReviews.length > 0) {
+      console.log('got new reviews for', app.cacheKey, newReviews);
+      var handles = postReviewsToSlack(newReviews, app);
+      return Promise.all(handles);
     }
-  }
-
-  return app;
+    else {
+      console.log('no new reviews for ' + app.cacheKey);
+      return false;
+    }
+  });
 }
 
-
-async function updateLastReviewSeen(cacheKey, review) {
-  var id = review ? review.id : 'undefined';
-  console.log('setting last review id for ' + cacheKey + ' to ' + id);
+async function storeAppIfUnseen(app) {
   try {
     var response = await DynamoDb.put({
       TableName: process.env.DYNAMODB_TABLE,
       Item: { 
-        id: cacheKey,
-        lastSeenReviewId: id
+        id: app.cacheKey,
+        seen: (new Date()).toISOString()
       },
-    }).promise();  
+      ConditionExpression: "attribute_not_exists(id)"
+    }).promise();
+
+    console.log(response);
+
+    return true;
   }
   catch(e) {
-    console.log(e);
-    throw e;
+    if(e.name !== 'ConditionalCheckFailedException') {
+      console.log(e);
+      throw e;
+    }
+    return false;
   }
-
-  return response;
 }
 
-async function postReviewsToSlack(reviews, app) {
+async function storeReviewIfUnseen(cacheKey, review) {
+  try {
+    var response = await DynamoDb.put({
+      TableName: process.env.DYNAMODB_TABLE,
+      Item: { 
+        id: cacheKey + '-' + review.id,
+        seen: (new Date()).toISOString(),
+        text: review.text,
+        score: review.score,
+        url: review.url
+      },
+      ConditionExpression: "attribute_not_exists(id)"
+    }).promise();
+
+    return review;
+  }
+  catch(e) {
+    if(e.name !== 'ConditionalCheckFailedException') {
+      console.log(e);
+      throw e;
+    }
+    return false;
+  }
+}
+
+function postReviewsToSlack(reviews, app) {
+  var handles = [];
   for(var review, i = 0; review = reviews[i]; i++) {
     var message = formatSlackMessage(review, app); 
-    await postToSlack(message);
+    handles.push(postToSlack(message));
   }
+  return handles;
 }
 
 function formatSlackMessage(review, app) {
@@ -140,6 +147,9 @@ function formatSlackMessage(review, app) {
   var pretext = 'New review'
   if (app.appName != null) {
     pretext += ' for ' + app.appName
+  }
+  if (app.store != null) {
+    pretext += ' on ' + FRIENDLY_STORE_NAMES[app.store]
   }
   pretext += '!'
 
