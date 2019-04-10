@@ -75,5 +75,12 @@
         "languages": [
             "en"
         ]
+    },
+    {
+        "appId": "nz.co.paperkite.itheavyhitters",
+        "appName": "IT Heavy Hitters",
+        "languages": [
+            "en"
+        ]
     }
 ]
