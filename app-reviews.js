@@ -24,24 +24,35 @@ async function start() {
 
 async function fetchFromAppStore(app) {
   var results = []
-  for(var country, i = 0; country = app.countries[i]; i++) {
-    console.log('Fetching reviews for: ', { id: app.appId, country: country });
-    var reviews = await AppStore.reviews({ id: app.appId, country: country });
-    app.store = 'app-store';
-    app.cacheKey = [app.store, country, app.appId].join('-');
-    results.push(await handleReviews(reviews, app));
+  try {
+    for(var country, i = 0; country = app.countries[i]; i++) {
+      console.log('Fetching reviews for: ', { id: app.appId, country: country });
+      var reviews = await AppStore.reviews({ id: app.appId, country: country });
+      app.store = 'app-store';
+      app.cacheKey = [app.store, country, app.appId].join('-');
+      results.push(await handleReviews(reviews, app));
+    }
+  }
+  catch(e) {
+    console.error(`Error fetching reviews for appstore:${app.appId}`, e);
+    
   }
   return results;
 }
 
 async function fetchFromGooglePlay(app) {
   var results = []
-  for(var language, i = 0; language = app.languages[i]; i++) {
-    console.log('Fetching reviews for: ', { appId: app.appId, lang: language });
-    var reviews = await PlayStore.reviews({ appId: app.appId, lang: language });
-    app.store = 'google-play';
-    app.cacheKey = [app.store, language, app.appId].join('-');
-    return handleReviews(reviews, app);
+  try {
+    for(var language, i = 0; language = app.languages[i]; i++) {
+      console.log('Fetching reviews for: ', { appId: app.appId, lang: language });
+      var reviews = await PlayStore.reviews({ appId: app.appId, lang: language });
+      app.store = 'google-play';
+      app.cacheKey = [app.store, language, app.appId].join('-');
+      results.push(await handleReviews(reviews, app));
+    }
+  }
+  catch(e) {
+    console.error(`Error fetching reviews for googleplay:${app.appId}`, e);
   }
   return results;
 }
