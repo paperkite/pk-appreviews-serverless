@@ -35,13 +35,6 @@
         ]
     },
     {
-        "appId": "nz.org.policeassn.nzpa",
-        "appName": "NZPA",
-        "languages": [
-            "en"
-        ]
-    },
-    {
         "appId": "nz.co.paperkite.beervana",
         "appName": "Beervana",
         "languages": [
