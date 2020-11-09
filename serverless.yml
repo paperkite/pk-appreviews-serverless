@@ -16,7 +16,7 @@ service: pk-app-review-monitor # NOTE: update this with your service name
 provider:
   name: aws
   stage: production
-  runtime: nodejs8.10
+  runtime: nodejs12.19.0
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
   iamRoleStatements:
